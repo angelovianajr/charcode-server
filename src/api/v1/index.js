@@ -6,7 +6,7 @@ import users from './users';
 const router = Router();
 
 router.use(authentication);
-route.use(auth);
+router.use(auth);
 router.use(users);
 
 export default router;
