@@ -10,6 +10,17 @@ function findByEmail(user) {
     });
 }
 
+function listAll() {
+    return new Promise(function (resolve, reject) {
+        User.find(function (err, users) {
+            if (err) reject(err);
+
+            resolve(users);
+        });
+    });
+}
+
 module.exports = {
-    findByEmail
+    findByEmail,
+    listAll
 };
