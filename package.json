@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon src/app.js --inspect --exec babel-node",
     "build": "babel src -d dist",
-    "serve": "node dist/app.js"
+    "serve": "node dist/app.js",
+    "test": "mocha --require babel-register",
+    "lint": "eslint src/**"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
