@@ -26,9 +26,9 @@ function encrypt(value) {
     });
 };
 
-function compare(first, second) {
+function compare(value, encrypted) {
     return new Promise((resolve, reject) => {
-        bcrypt.compare(first, second, (err, equals) => {
+        bcrypt.compare(value, encrypted, (err, equals) => {
             if (err) reject(err);
 
             resolve(equals);
