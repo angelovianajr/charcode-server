@@ -15,6 +15,17 @@ function createToken(user) {
     return jwt.sign(tokenUser, authSecret, tokenConfig);
 }
 
+function verifyToken(token) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, authSecret, function (err, decoded) {
+            if (err) reject(err);
+
+            resolve(decoded);
+        });
+    });
+}
+
 export default {
-    createToken
+    createToken,
+    verifyToken
 };
