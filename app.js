@@ -9,7 +9,6 @@ dotenv.config();
 var app = express();
 
 configExpress(app);
-
 configDatabase.connectToDatabase(process.env.DB_BASE, process.env.DB_HOST, process.env.DB_USER, process.env.DB_PWD);
 
 app.use(router);
