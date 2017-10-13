@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt-nodejs';
+import encryptionService from '../services/encryption-service';
 
 // Main Schema
 const userSchema = new mongoose.Schema({
@@ -23,37 +23,29 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     }
-}, {
+},
+    {
         minimize: false
     });
 
 // Chamado antes de salvar no banco de dados no banco e criptografa a senha
-userSchema.pre('save', (next) => {
-    const user = this;
-    // Verifica se a senha do usuário foi modificada ou é nova
-    if (this.isModified('password') || this.isNew) {
-        bcrypt.genSalt(16, (err, salt) => {
-            if (err) return next(err);
-            // Gera um hash com a senha e um salt
-            bcrypt.hash(user.password, salt, null, (err, hash) => {
-                if (err) return next(err);
-                // Seta a senha do usuário como o hash gerado
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        return next();
-    }
+userSchema.pre('save', function (next) {
+    if (!this.isModified('password') && !this.isNew) next();
+
+    encryptionService.encrypt(user.password).then(() => {
+        this.password = hash;
+        next();
+    }).catch((err) => {
+        next(err);
+    });
 });
 
-userSchema.methods.comparePassword = function (passw, callback) {
-    bcrypt.compare(passw, this.password, (err, isMatch) => {
-        if (err) {
-            return callback(err);
-        }
-        callback(null, isMatch);
+userSchema.methods.comparePassword = function (password, callback) {
+    encryptionService.compare(password, this.password).then((equals) => {
+        callback(undefined, equals);
+    }).catch((err) => {
+        callback(err);
     });
 };
 
-export default mongoose.model('User', userSchema);;
+export default mongoose.model('User', userSchema);
