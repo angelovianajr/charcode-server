@@ -3,19 +3,17 @@ var jwt = require('jsonwebtoken');
 
 const securityConfig = process.env.SECURITY_SECRET;
 var User = require('../../models/user');
+var authService = require('../../services/auth-service');
+var userService = require('../../services/user-service');
 
-// users route 
-router.post("/signin", function (req, res, next) {
-
+function signin(req, res) {
     // TODO: Adicionar outras validações
-    req.checkBody("email", "Please, use a valid email").isEmail();
-    req.checkBody("password", "Password have at least 8 digits").isLength({ min: 8 })
+    req.checkBody('email', 'Please, use a valid email').isEmail();
+    req.checkBody('password', 'Password have at least 8 digits').isLength({ min: 8 })
 
-    // Faz a validação
-    var validationErrors = req.validationErrors();
-    // Caso tenha erros, retorna os erros para o cliente
-    if (validationErrors)
-        return res.status(400).send(validationErrors);
+    if (req.validationErrors()) {
+        res.status(400).send(validationErrors);
+    }
 
     // cria um objeto usuário para login
     var user = new User({
@@ -23,86 +21,54 @@ router.post("/signin", function (req, res, next) {
         password: req.body.password
     });
 
-    // Procura pelo usuário no banco
-    User.findOne({ email: user.email }, (err, searchedUser) => {
-        if (err)
-            return res.send(err);
+    userService.findByEmail(user.email).then(function (userFind) {
+        return new Promisse(function (resolve, reject) {
+            userFind.comparePassword(user.password, function (err, match) {
+                if (err) reject(err);
 
-        // Verifica se nanhum usuário foi encontrado, ou seja o email é unico
-        if (searchedUser) {
-            // Compara a senha do usuário
-            searchedUser.comparePassword(user.password, (err, isMatch) => {
-                if (err)
-                    return res.send(err);
-
-                // A senha está correta
-                if (isMatch) {
-                    // Gera o token JWT
-                    var token = jwt.sign({
-                        id: searchedUser._id,
-                        name: searchedUser.name,
-                        email: searchedUser.email,
-                        roles: searchedUser.roles
-                    },
-                        securityConfig.secret,
-                        {
-                            expiresIn: config.app.tokenExpiresTime * 60 * 60
-                        })
-                    // Retorna o token para o usuário que logou com sucesso
-                    res.status(200).json({
-                        msg: "logged with sucess",
-                        token: token
-                    });
-                } else {
-                    res.status(400).json({ msg: "Incorrect password" })
-                }
+                resolve(userFind);
             });
-            // Caso o email não seja unico, 
-        } else {
-            res.status(400).json({ msg: 'User not found' })
-        }
-
-    });
-});
-
-
-router.route("/signup")
-    // Create new user
-    .post(function (req, res, next) {
-
-        // TODO: Adicionar outras validações
-        req.checkBody("name", "Name cannot be empty").notEmpty();
-        req.checkBody("email", "Please, use a valid email").isEmail();
-        req.checkBody("password", "Password cannot be empty").notEmpty();
-
-        var errors = req.validationErrors();
-        if (errors)
-            return res.status(400).send(errors);
-
-        var user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
         });
-
-        User.findOne({ email: user.email }, function (err, searchedUser) {
-            if (err)
-                return res.send(err);
-
-            // Verifica se nanhum usuário foi encontrado, ou seja o email é unico
-            if (!searchedUser) {
-                // Salva o usuário e retorna erros
-                user.save(function (err) {
-                    if (err)
-                        return res.send(err);
-
-                    res.status(201).json({ msg: 'User registered', data: user });
-                });
-                // Caso o email não seja unico, 
-            } else {
-                res.status(400).json({ msg: 'Email alredy in use.' })
-            }
-        })
+    }).then(function (userFind) {
+        var token = authService.createToken(userFind);
+        res.status(200).json({ token });
+    }).catch(function (error) {
+        res.status(500).send(error);
     });
+};
+
+function signup() {
+    // TODO: Adicionar outras validações
+    req.checkBody('name', 'Name cannot be empty').notEmpty();
+    req.checkBody('email', 'Please, use a valid email').isEmail();
+    req.checkBody('password', 'Password cannot be empty').notEmpty();
+
+    if (req.validationErrors()) {
+        return res.status(400).send(errors);
+    }
+
+    var newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    });
+
+    userService.findByEmail(newUser.email).then(function (user) {
+        return new Promise(function (resolve, reject) {
+            newUser.save(function (err) {
+                if (err) reject(err);
+
+                resolve();
+            });
+        });
+    }).then(function () {
+        res.status(201).json({ user });
+    }).catch(function (error) {
+        res.status(500).send(error);
+    });
+};
+
+router.route('/signin').post(signin);
+router.route('/signup').post(signup);
 
 module.exports = router;
