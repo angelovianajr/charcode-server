@@ -1,7 +1,7 @@
 var express = require('express');
+var dotenv = require('dotenv-safe');
 var configExpress = require('./config/express');
 var configDatabase = require('./config/database');
-var dotenv = require('dotenv-safe');
 
 dotenv.config();
 
