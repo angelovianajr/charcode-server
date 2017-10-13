@@ -40,7 +40,7 @@ function signin(req, res) {
 function signup() {
     // TODO: Adicionar outras validações
     req.checkBody('name', 'Name cannot be empty').notEmpty();
-    req.checkBody('email', 'Please, use a valid email').isEmail();
+    req.checkBody('email', 'Please, use a valid email').notEmpty().isEmail();
     req.checkBody('password', 'Password cannot be empty').notEmpty();
 
     if (req.validationErrors()) {
