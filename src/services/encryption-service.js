@@ -8,14 +8,14 @@ const rounds = 16;
  * @returns {Promise<string>}
  */
 function createHash(value, salt) {
-    return new Promise((resolve, reject) => {
-        bcrypt.hash(value, salt, undefined, (err, hash) => {
-            if (err) reject(err);
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(value, salt, undefined, (err, hash) => {
+      if (err) reject(err);
 
-            resolve(hash);
-        });
+      resolve(hash);
     });
-};
+  });
+}
 
 /**
  * Encrypt a string with a random salt of 16-rounds
@@ -23,36 +23,36 @@ function createHash(value, salt) {
  * @returns {Promise<string>}
  */
 function encrypt(value) {
-    return new Promise((resolve, reject) => {
-        bcrypt.genSalt(rounds, (err, salt) => {
-            if (err) reject(err);
+  return new Promise((resolve, reject) => {
+    bcrypt.genSalt(rounds, (err, salt) => {
+      if (err) reject(err);
 
-            createHash(value, salt).then((hash) => {
-                resolve(hash);
-            }).catch((err) => {
-                reject(err);
-            });
-        });
+      createHash(value, salt).then((hash) => {
+        resolve(hash);
+      }).catch((error) => {
+        reject(error);
+      });
     });
-};
+  });
+}
 
 /**
  * Compare two values
- * @param {string} value 
+ * @param {string} value
  * @param {string} encrypted
  * @returns {Promisse<boolean>}
  */
 function compare(value, encrypted) {
-    return new Promise((resolve, reject) => {
-        bcrypt.compare(value, encrypted, (err, equals) => {
-            if (err) reject(err);
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(value, encrypted, (err, equals) => {
+      if (err) reject(err);
 
-            resolve(equals);
-        });
+      resolve(equals);
     });
+  });
 }
 
 export default {
-    encrypt,
-    compare
+  encrypt,
+  compare,
 };

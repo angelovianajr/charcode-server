@@ -8,8 +8,8 @@ const secondsInHour = 3600;
  * @param {number} tokenDuration duration of token in hours
  * @returns {number}
  */
-function calculateExpirationTime(tokenDutaion) {
-    return expirationTime * secondsInHour;
+function calculateExpirationTime(tokenDuration) {
+  return tokenDuration * secondsInHour;
 }
 
 /**
@@ -17,19 +17,19 @@ function calculateExpirationTime(tokenDutaion) {
  * @param {User} user id, name, email and roles of user
  * @returns {string}
  */
-function createToken(user) {
-    const tokenUser = {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        roles: user.roles
-    };
+function createToken({ _id, name, email, roles }) {
+  const tokenUser = {
+    id: _id,
+    name,
+    email,
+    roles,
+  };
 
-    const tokenConfig = {
-        expiresIn: calculateExpirationTime(TOKEN_DURATION)
-    };
+  const tokenConfig = {
+    expiresIn: calculateExpirationTime(TOKEN_DURATION),
+  };
 
-    return jwt.sign(tokenUser, SECURITY_SECRET, tokenConfig);
+  return jwt.sign(tokenUser, SECURITY_SECRET, tokenConfig);
 }
 
 /**
@@ -38,16 +38,16 @@ function createToken(user) {
  * @returns {Promise<string>}
  */
 function verifyToken(token) {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, SECURITY_SECRET, function (err, decoded) {
-            if (err) reject(err);
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, SECURITY_SECRET, (err, decoded) => {
+      if (err) reject(err);
 
-            resolve(decoded);
-        });
+      resolve(decoded);
     });
+  });
 }
 
 export default {
-    createToken,
-    verifyToken
+  createToken,
+  verifyToken,
 };

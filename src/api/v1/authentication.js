@@ -6,69 +6,62 @@ import userService from '../../services/user-service';
 
 const router = Router();
 
-function signin(req, res) {
-    // TODO: Adicionar outras validações
-    req.checkBody('email', 'Please, use a valid email').isEmail();
-    req.checkBody('password', 'Password have at least 8 digits').isLength({ min: 8 });
+function login(req, res) {
+  // TODO: Adicionar outras validações
+  req.checkBody('email', 'Please, use a valid email').isEmail();
+  req.checkBody('password', 'Password have at least 8 digits').isLength({ min: 8 });
 
-    if (req.validationErrors()) {
-        res.status(400).send(req.validationErrors());
-    }
+  const errors = req.validationErrors();
+  if (errors) {
+    res.status(400).send(errors);
+  }
 
-    const user = new User({
-        email: req.body.email,
-        password: req.body.password,
+  const { email, password } = req.body;
+  const user = new User({ email, password });
+
+  userService.findByEmail(user.email).then(userFind => new Promise((resolve, reject) => {
+    userFind.comparePassword(user.password, (err, match) => {
+      if (err) reject(err);
+      if (!match) reject(new Error('The passwords do not match'));
+
+      resolve(userFind);
     });
-
-    userService.findByEmail(user.email).then((userFind) => {
-        return new Promise((resolve, reject) => {
-            userFind.comparePassword(user.password, (err, match) => {
-                if (err) reject(err);
-                if (!match) reject('The passwords do not match');
-
-                resolve(userFind);
-            });
-        });
-    }).then((userFind) => {
-        const token = authService.createToken(userFind);
-        res.status(200).json({ token });
-    }).catch((error) => {
-        res.status(500).send(error);
-    });
+  })).then((userFind) => {
+    const token = authService.createToken(userFind);
+    res.status(200).json({ token });
+  }).catch((error) => {
+    res.status(500).send(error);
+  });
 }
 
-function signupr(req, res) {
-    // TODO: Adicionar outras validações
-    req.checkBody('name', 'Name cannot be empty').notEmpty();
-    req.checkBody('email', 'Please, use a valid email').notEmpty().isEmail();
-    req.checkBody('password', 'Password cannot be empty').notEmpty();
+function register(req, res) {
+  // TODO: Adicionar outras validações
+  req.checkBody('name', 'Name cannot be empty').notEmpty();
+  req.checkBody('email', 'Please, use a valid email').notEmpty().isEmail();
+  req.checkBody('password', 'Password cannot be empty').notEmpty();
 
-    if (req.validationErrors()) {
-        return res.status(400).send(errors);
-    }
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send(errors);
+  }
 
-    const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
+  const { name, email, password } = req.body;
+  const newUser = new User({ name, email, password });
+
+  userService.findByEmail(newUser.email).then(user => new Promise((resolve, reject) => {
+    newUser.save((err) => {
+      if (err) reject(err);
+
+      resolve(user);
     });
-
-    userService.findByEmail(newUser.email).then((user) => {
-        return new Promise((resolve, reject) => {
-            newUser.save((err) => {
-                if (err) reject(err);
-
-                resolve();
-            });
-        });
-    }).then(() => {
-        res.status(201).json({ user });
-    }).catch((error) => {
-        res.status(500).send(error);
-    });
+  })).then((user) => {
+    res.status(201).json({ user });
+  }).catch((error) => {
+    res.status(500).send(error);
+  });
 }
 
-router.route('/signin').post(signin);
-router.route('/signup').post(signup);
+router.route('/signin').post(login);
+router.route('/signup').post(register);
 
 export default router;

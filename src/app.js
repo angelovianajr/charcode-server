@@ -9,6 +9,7 @@ dotenv.config();
 const app = express();
 
 configExpress(app);
+/* eslint-disable object-curly-newline */
 const { DB_BASE, DB_HOST, DB_USER, DB_PWD } = process.env;
 configDatabase.connectToDatabase(DB_BASE, DB_HOST, DB_USER, DB_PWD);
 

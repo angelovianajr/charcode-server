@@ -6,15 +6,15 @@ import validator from 'express-validator';
 import cookieParser from 'cookie-parser';
 
 function configureMiddlewares(app) {
-    const logger = morgan(process.env.LOGGER_TYPE);
+  const logger = morgan(process.env.LOGGER_TYPE);
 
-    app.use(helmet());
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(cors());
-    app.use(logger);
-    app.use(validator());
-    app.use(cookieParser());
+  app.use(helmet());
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cors());
+  app.use(logger);
+  app.use(validator());
+  app.use(cookieParser());
 }
 
 export default configureMiddlewares;

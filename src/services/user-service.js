@@ -6,13 +6,13 @@ import User from '../models/user';
  * @returns {Promise<User>}
  */
 function findByEmail(email) {
-    return new Promise((resolve, reject) => {
-        User.findOne({ email }, (err, user) => {
-            if (err) reject(err);
+  return new Promise((resolve, reject) => {
+    User.findOne({ email }, (err, user) => {
+      if (err) reject(err);
 
-            resolve(user);
-        });
+      resolve(user);
     });
+  });
 }
 
 /**
@@ -20,16 +20,16 @@ function findByEmail(email) {
  * @returns {Promise<User[]>}
  */
 function listAll() {
-    return new Promise((resolve, reject) => {
-        User.find((err, users) => {
-            if (err) reject(err);
+  return new Promise((resolve, reject) => {
+    User.find((err, users) => {
+      if (err) reject(err);
 
-            resolve(users);
-        });
+      resolve(users);
     });
+  });
 }
 
 export default {
-    findByEmail,
-    listAll
+  findByEmail,
+  listAll,
 };
