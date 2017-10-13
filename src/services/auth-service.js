@@ -1,4 +1,6 @@
-const authSecret = process.env.SECURITY_SECRET;
+import jwt from 'jsonwebtoken';
+
+const { SECURITY_SECRET, TOKEN_EXPIRE_TIME } = process.env;
 
 function createToken(user) {
     const tokenUser = {
@@ -12,12 +14,12 @@ function createToken(user) {
         expiresIn: config.app.tokenExpiresTime * 60 * 60
     };
 
-    return jwt.sign(tokenUser, authSecret, tokenConfig);
+    return jwt.sign(tokenUser, SECURITY_SECRET, tokenConfig);
 }
 
 function verifyToken(token) {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, authSecret, function (err, decoded) {
+        jwt.verify(token, SECURITY_SECRET, function (err, decoded) {
             if (err) reject(err);
 
             resolve(decoded);
