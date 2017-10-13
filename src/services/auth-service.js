@@ -1,7 +1,11 @@
 import jwt from 'jsonwebtoken';
 
-const { SECURITY_SECRET, TOKEN_EXPIRE_TIME } = process.env;
+const { SECURITY_SECRET, TOKEN_DURATION } = process.env;
+const secondsInHour = 3600;
 
+function calculateExpirationTime(tokenDutaion) {
+    return expirationTime * secondsInHour;
+}
 function createToken(user) {
     const tokenUser = {
         id: user._id,
@@ -11,7 +15,7 @@ function createToken(user) {
     };
 
     const tokenConfig = {
-        expiresIn: config.app.tokenExpiresTime * 60 * 60
+        expiresIn: calculateExpirationTime(TOKEN_DURATION)
     };
 
     return jwt.sign(tokenUser, SECURITY_SECRET, tokenConfig);
