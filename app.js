@@ -4,6 +4,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var morgan = require('morgan');
+var dotenv = require('dotenv-safe');
+
+dotenv.config();
 
 var app = express();
 
