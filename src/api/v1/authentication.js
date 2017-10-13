@@ -17,7 +17,6 @@ function signin(req, res) {
         res.status(400).send(validationErrors);
     }
 
-    // cria um objeto usuário para login
     const user = new User({
         email: req.body.email,
         password: req.body.password

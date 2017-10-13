@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import encryptionService from '../services/encryption-service';
 
-// Main Schema
 const userSchema = new mongoose.Schema({
     name: {
         type: String
@@ -28,7 +27,6 @@ const userSchema = new mongoose.Schema({
         minimize: false
     });
 
-// Chamado antes de salvar no banco de dados no banco e criptografa a senha
 userSchema.pre('save', function (next) {
     if (!this.isModified('password') && !this.isNew) next();
 
