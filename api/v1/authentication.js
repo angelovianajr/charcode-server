@@ -1,8 +1,8 @@
-const config = require('./../bin/config.js');
-const securityConfig = config.security;
 var router = require('express').Router();
-var User = require('./../models/user');
 var jwt = require('jsonwebtoken');
+
+const securityConfig = process.env.SECURITY_SECRET;
+var User = require('../../models/user');
 
 // users route 
 router.post("/signin", function (req, res, next) {
