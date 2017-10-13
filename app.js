@@ -14,5 +14,3 @@ configDatabase.connectToDatabase(process.env.DB_BASE, process.env.DB_HOST, proce
 app.use('/api/v1', require('./routes.js'));
 
 app.listen(process.env.PORT);
-
-module.exports = app;
