@@ -1,14 +1,13 @@
 import { Router } from 'express';
+import userService from '../../services/user-service';
 
 const router = Router();
-
-import userService from '../../services/user-service';
 
 function listAll(req, res) {
   userService.listAll().then((users) => {
     res.json(users);
   }).catch((error) => {
-    res.status(400).send(err);
+    res.status(400).send(error);
   });
 }
 

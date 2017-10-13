@@ -4,28 +4,27 @@ import User from '../../models/user';
 import authService from '../../services/auth-service';
 import userService from '../../services/user-service';
 
-const securityConfig = process.env.SECURITY_SECRET;
-
 const router = Router();
 
 function signin(req, res) {
     // TODO: Adicionar outras validações
     req.checkBody('email', 'Please, use a valid email').isEmail();
-    req.checkBody('password', 'Password have at least 8 digits').isLength({ min: 8 })
+    req.checkBody('password', 'Password have at least 8 digits').isLength({ min: 8 });
 
     if (req.validationErrors()) {
-        res.status(400).send(validationErrors);
+        res.status(400).send(req.validationErrors());
     }
 
     const user = new User({
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
     });
 
     userService.findByEmail(user.email).then((userFind) => {
-        return new Promisse((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             userFind.comparePassword(user.password, (err, match) => {
                 if (err) reject(err);
+                if (!match) reject('The passwords do not match');
 
                 resolve(userFind);
             });
@@ -36,9 +35,9 @@ function signin(req, res) {
     }).catch((error) => {
         res.status(500).send(error);
     });
-};
+}
 
-function signup() {
+function signupr(req, res) {
     // TODO: Adicionar outras validações
     req.checkBody('name', 'Name cannot be empty').notEmpty();
     req.checkBody('email', 'Please, use a valid email').notEmpty().isEmail();
@@ -67,7 +66,7 @@ function signup() {
     }).catch((error) => {
         res.status(500).send(error);
     });
-};
+}
 
 router.route('/signin').post(signin);
 router.route('/signup').post(signup);
