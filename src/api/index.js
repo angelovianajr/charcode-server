@@ -1,10 +1,10 @@
-var Router = require('express').Router;
-var v1 = require('./v1/index');
+import { Router } from 'express';
+import v1 from './v1/index';
 
-var basePath = '/api';
+const basePath = '/api';
 
-var router = Router();
+const router = Router();
 
 router.use(`${basePath}/v1`, v1);
 
-module.exports = router;
+export default router;

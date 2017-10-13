@@ -1,12 +1,10 @@
+import jwt from 'jsonwebtoken';
+
 const securitySecret = process.env.SECURITY_SECRET;
-var jwt = require('jsonwebtoken');
 
-var authenticated = (req, res, next) => {
+const authenticated = (req, res, next) => {
+    const token = req.headers['x-access-token'] || req.body.token || req.query.token;
 
-    // Busca o token no corpo, na url e no header
-    var token = req.headers['x-access-token'] || req.body.token || req.query.token;
-
-    // Verifica se foi achado o token
     if (token) {
         // verifies secret and checks exp
         jwt.verify(token, securitySecret, function (err, decoded) {
@@ -25,4 +23,4 @@ var authenticated = (req, res, next) => {
     }
 }
 
-module.exports = authenticated;
+export default authenticated;

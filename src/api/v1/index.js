@@ -1,12 +1,12 @@
-var Router = require('express').Router;
-var auth = require('../../middlewares/authentication');
-var authentication = require('./authentication');
-var users = require('./users');
+import { Router } from 'express';
+import auth from '../../middlewares/authentication';
+import authentication from './authentication';
+import users from './users';
 
-var router = Router();
+const router = Router();
 
 router.use(authentication);
 route.use(auth);
 router.use(users);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 mongoose.Promise = global.Promise;
 
@@ -6,7 +6,7 @@ function connect(connectionString) {
     mongoose.connect(connectionString, {
         useMongoClient: true
     }).then(() => {
-
+        console.log('Successfully conected!');
     }).catch(console.error.bind(console, 'Connection error: '));
 }
 
@@ -35,7 +35,7 @@ function connectToDatabase(database, host, user, password) {
     connect(connectionString);
 }
 
-module.exports = {
+export default {
     connectToDatabase,
     connect
 };

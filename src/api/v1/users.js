@@ -1,12 +1,13 @@
-var express = require('express');
-var router = express.Router();
+import { Router } from 'express';
 
-var userService = require('../../services/user-service');
+const router = Router();
+
+import userService from '../../services/user-service';
 
 function listAll(req, res) {
-  userService.listAll().then(function (users) {
+  userService.listAll().then((users) => {
     res.json(users);
-  }).catch(function (error) {
+  }).catch((error) => {
     res.status(400).send(err);
   });
 }
@@ -14,4 +15,4 @@ function listAll(req, res) {
 router.route('/users')
   .get(listAll);
 
-module.exports = router;
+export default router;

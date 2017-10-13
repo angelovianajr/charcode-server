@@ -1,10 +1,13 @@
-var router = require('express').Router();
-var jwt = require('jsonwebtoken');
+import { Router } from 'express';
+import jwt from 'jsonwebtoken';
+
+import User from '../../models/user';
+import authService from '../../services/auth-service';
+import userService from '../../services/user-service';
 
 const securityConfig = process.env.SECURITY_SECRET;
-var User = require('../../models/user');
-var authService = require('../../services/auth-service');
-var userService = require('../../services/user-service');
+
+const router = Router();
 
 function signin(req, res) {
     // TODO: Adicionar outras validações
@@ -16,23 +19,23 @@ function signin(req, res) {
     }
 
     // cria um objeto usuário para login
-    var user = new User({
+    const user = new User({
         email: req.body.email,
         password: req.body.password
     });
 
-    userService.findByEmail(user.email).then(function (userFind) {
-        return new Promisse(function (resolve, reject) {
-            userFind.comparePassword(user.password, function (err, match) {
+    userService.findByEmail(user.email).then((userFind) => {
+        return new Promisse((resolve, reject) => {
+            userFind.comparePassword(user.password, (err, match) => {
                 if (err) reject(err);
 
                 resolve(userFind);
             });
         });
-    }).then(function (userFind) {
-        var token = authService.createToken(userFind);
+    }).then((userFind) => {
+        const token = authService.createToken(userFind);
         res.status(200).json({ token });
-    }).catch(function (error) {
+    }).catch((error) => {
         res.status(500).send(error);
     });
 };
@@ -47,23 +50,23 @@ function signup() {
         return res.status(400).send(errors);
     }
 
-    var newUser = new User({
+    const newUser = new User({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password
     });
 
-    userService.findByEmail(newUser.email).then(function (user) {
-        return new Promise(function (resolve, reject) {
-            newUser.save(function (err) {
+    userService.findByEmail(newUser.email).then((user) => {
+        return new Promise((resolve, reject) => {
+            newUser.save((err) => {
                 if (err) reject(err);
 
                 resolve();
             });
         });
-    }).then(function () {
+    }).then(() => {
         res.status(201).json({ user });
-    }).catch(function (error) {
+    }).catch((error) => {
         res.status(500).send(error);
     });
 };
@@ -71,4 +74,4 @@ function signup() {
 router.route('/signin').post(signin);
 router.route('/signup').post(signup);
 
-module.exports = router;
+export default router;

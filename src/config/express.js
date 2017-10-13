@@ -1,9 +1,9 @@
-var helmet = require('helmet');
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var morgan = require('morgan');
-var validator = require('express-validator');
-var cookieParser = require('cookie-parser');
+import helmet from 'helmet';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import morgan from 'morgan';
+import validator from 'express-validator';
+import cookieParser from 'cookie-parser';
 
 function configureMiddlewares(app) {
     const logger = morgan(process.env.LOGGER_TYPE);
@@ -17,4 +17,4 @@ function configureMiddlewares(app) {
     app.use(cookieParser());
 }
 
-module.exports = configureMiddlewares;
+export default configureMiddlewares;

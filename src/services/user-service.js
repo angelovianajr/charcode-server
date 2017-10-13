@@ -1,7 +1,7 @@
-var User = require('../models/user');
+import User from '../models/user';
 
 function findByEmail(user) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         User.findOne({ email: user.email }, (err, user) => {
             if (err) reject(err);
 
@@ -11,8 +11,8 @@ function findByEmail(user) {
 }
 
 function listAll() {
-    return new Promise(function (resolve, reject) {
-        User.find(function (err, users) {
+    return new Promise((resolve, reject) => {
+        User.find((err, users) => {
             if (err) reject(err);
 
             resolve(users);
@@ -20,7 +20,7 @@ function listAll() {
     });
 }
 
-module.exports = {
+export default {
     findByEmail,
     listAll
 };
