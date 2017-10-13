@@ -1,4 +1,4 @@
-const securityConfig = require('./../bin/config.js').security;
+const securitySecret = process.env.SECURITY_SECRET;
 var jwt = require('jsonwebtoken');
 
 var authenticated = (req, res, next) => {
@@ -9,7 +9,7 @@ var authenticated = (req, res, next) => {
     // Verifica se foi achado o token
     if (token) {
         // verifies secret and checks exp
-        jwt.verify(token, securityConfig.secret, function (err, decoded) {
+        jwt.verify(token, securitySecret, function (err, decoded) {
             if (err)
                 return res.status(403).json({ msg: 'Invalid token.' });
 
