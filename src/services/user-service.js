@@ -1,8 +1,8 @@
 import User from '../models/user';
 
-function findByEmail(user) {
+function findByEmail(email) {
     return new Promise((resolve, reject) => {
-        User.findOne({ email: user.email }, (err, user) => {
+        User.findOne({ email }, (err, user) => {
             if (err) reject(err);
 
             resolve(user);
