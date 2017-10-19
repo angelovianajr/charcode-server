@@ -4,7 +4,10 @@ import configExpress from './config/express';
 import configDatabase from './config/database';
 import router from './api/index';
 
-dotenv.config();
+dotenv.load({
+  path: './env/.env',
+  sample: './env/.env.example',
+});
 
 const app = express();
 
