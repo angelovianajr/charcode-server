@@ -6,7 +6,7 @@
 3. Start the server (`yarn start`/`npm run start`)
 4. Done! ;)
 
-* **dotenv** The env folder have a `.env.example` file to indicate wich keys **must** be in your `.env`(wich you have to create and fill by yourself). Each key have an explanation about his meaning.
+\* the env folder have a `.env.example` file to indicate wich keys **must** be in your `.env`(wich you have to create and fill by yourself) otherwise the application will not startup, this behaviour is caused by the use of [dotenv-safe](https://github.com/rolodato/dotenv-safe/issues/1). Each key have an explanation what is his usage to facilitate the filling.
 
 ### npm Scripts
 `start` - start the application with live reload
